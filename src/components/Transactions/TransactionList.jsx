@@ -9,6 +9,9 @@ const TransactionList = ({ role, onDataChange }) => {
   const [filterBy, setFilterBy] = useState("none");
   const [filterInput, setFilterInput] = useState("");
 
+  const [sortBy, setSortBy] = useState("latest");
+  const [showSort, setShowSort] = useState(false);
+
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     amount: "",
@@ -59,7 +62,8 @@ const TransactionList = ({ role, onDataChange }) => {
     setShowForm(false);
   };
 
-  const filteredList = transactions.filter((item) => {
+  // FILTER
+  let filteredList = transactions.filter((item) => {
     const matchSearch = item.category
       .toLowerCase()
       .includes(searchText.toLowerCase());
@@ -73,10 +77,27 @@ const TransactionList = ({ role, onDataChange }) => {
     return matchSearch && matchFilter;
   });
 
+  // SORT
+  if (sortBy === "latest") {
+    filteredList.sort((a, b) => new Date(b.date) - new Date(a.date));
+  }
+
+  if (sortBy === "oldest") {
+    filteredList.sort((a, b) => new Date(a.date) - new Date(b.date));
+  }
+
+  if (sortBy === "high") {
+    filteredList.sort((a, b) => b.amount - a.amount);
+  }
+
+  if (sortBy === "low") {
+    filteredList.sort((a, b) => a.amount - b.amount);
+  }
+
   return (
     <div className="bg-white dark:bg-gray-800 text-gray-800 dark:text-white p-5 rounded-xl shadow-sm mt-6">
 
-      {/* TOP BAR FIXED */}
+      {/* TOP BAR */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-4">
 
         {/* LEFT */}
@@ -93,6 +114,13 @@ const TransactionList = ({ role, onDataChange }) => {
           >
             Filter
           </button>
+
+          <button
+            onClick={() => setShowSort((prev) => !prev)}
+            className="bg-gray-700 text-white px-3 rounded-md whitespace-nowrap"
+          >
+            Sort
+          </button>
         </div>
 
         {/* RIGHT */}
@@ -106,53 +134,18 @@ const TransactionList = ({ role, onDataChange }) => {
         )}
       </div>
 
-      {/* FORM */}
-      {showForm && (
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <input
-            placeholder="Amount"
-            className="border p-2 rounded-md bg-white dark:bg-gray-800 text-black dark:text-white"
-            value={formData.amount}
-            onChange={(e) =>
-              setFormData({ ...formData, amount: e.target.value })
-            }
-          />
-
-          <input
-            placeholder="Category"
-            className="border p-2 rounded-md bg-white dark:bg-gray-800 text-black dark:text-white"
-            value={formData.category}
-            onChange={(e) =>
-              setFormData({ ...formData, category: e.target.value })
-            }
-          />
-
-          <input
-            type="date"
-            className="border p-2 rounded-md bg-white dark:bg-gray-800 text-black dark:text-white"
-            value={formData.date}
-            onChange={(e) =>
-              setFormData({ ...formData, date: e.target.value })
-            }
-          />
-
+      {/* SORT DROPDOWN */}
+      {showSort && (
+        <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-md mb-4">
           <select
-            className="border p-2 rounded-md bg-white dark:bg-gray-800 text-black dark:text-white"
-            value={formData.type}
-            onChange={(e) =>
-              setFormData({ ...formData, type: e.target.value })
-            }
+            className="border p-2 w-full bg-white dark:bg-gray-800 text-black dark:text-white"
+            onChange={(e) => setSortBy(e.target.value)}
           >
-            <option value="expense">Expense</option>
-            <option value="income">Income</option>
+            <option value="latest">Latest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="high">Amount High to Low</option>
+            <option value="low">Amount Low to High</option>
           </select>
-
-          <button
-            onClick={addTransaction}
-            className="bg-green-500 text-white p-2 rounded col-span-2"
-          >
-            Save
-          </button>
         </div>
       )}
 
