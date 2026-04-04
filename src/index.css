@@ -6,3 +6,16 @@ html, body, #root {
   height: 100%;
   margin: 0;
 }
+
+:root {
+  --bg-main: #0f0f1a;
+  --bg-sidebar: #151528;
+  --accent: #a78bfa; /* purple */
+  --hover: #1f1f3a;
+  --text: #e5e7eb;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text);
+}
