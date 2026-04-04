@@ -62,7 +62,7 @@ const TransactionList = ({ role, onDataChange }) => {
     setShowForm(false);
   };
 
-  // FILTER
+  // 🔍 FILTER
   let filteredList = transactions.filter((item) => {
     const matchSearch = item.category
       .toLowerCase()
@@ -72,12 +72,15 @@ const TransactionList = ({ role, onDataChange }) => {
 
     if (filterBy === "date") matchFilter = item.date === filterInput;
     if (filterBy === "type") matchFilter = item.type === filterInput;
-    if (filterBy === "amount") matchFilter = item.amount >= Number(filterInput);
+    if (filterBy === "amount")
+      matchFilter = item.amount >= Number(filterInput || 0);
 
     return matchSearch && matchFilter;
   });
 
-  // SORT
+  // 🔃 SORT (SAFE)
+  filteredList = [...filteredList];
+
   if (sortBy === "latest") {
     filteredList.sort((a, b) => new Date(b.date) - new Date(a.date));
   }
@@ -94,6 +97,9 @@ const TransactionList = ({ role, onDataChange }) => {
     filteredList.sort((a, b) => a.amount - b.amount);
   }
 
+  const inputStyle =
+    "border p-2 w-full rounded-md bg-white text-black dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400";
+
   return (
     <div className="bg-white dark:bg-gray-800 text-gray-800 dark:text-white p-5 rounded-xl shadow-sm mt-6">
 
@@ -104,7 +110,7 @@ const TransactionList = ({ role, onDataChange }) => {
         <div className="flex gap-2 w-full md:w-1/2">
           <input
             placeholder="Search transactions..."
-            className="border p-2 w-full rounded-md bg-white dark:bg-gray-800 text-black dark:text-white"
+            className={inputStyle}
             onChange={(e) => setSearchText(e.target.value)}
           />
 
@@ -134,7 +140,63 @@ const TransactionList = ({ role, onDataChange }) => {
         )}
       </div>
 
-      {/* ✅ ADD FORM (FIXED ISSUE) */}
+      {/* FILTER UI */}
+      {showFilter && (
+        <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-md mb-3 flex gap-2 flex-wrap">
+
+          <select
+            value={filterBy}
+            onChange={(e) => setFilterBy(e.target.value)}
+            className={inputStyle}
+          >
+            <option value="none">No Filter</option>
+            <option value="date">Date</option>
+            <option value="type">Type</option>
+            <option value="amount">Min Amount</option>
+          </select>
+
+          {filterBy === "type" ? (
+            <select
+              value={filterInput}
+              onChange={(e) => setFilterInput(e.target.value)}
+              className={inputStyle}
+            >
+              <option value="">Select Type</option>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+          ) : (
+            <input
+              type={filterBy === "date" ? "date" : "number"}
+              placeholder="Enter value"
+              value={filterInput}
+              onChange={(e) => setFilterInput(e.target.value)}
+              className={inputStyle}
+            />
+          )}
+
+        </div>
+      )}
+
+      {/* SORT UI */}
+      {showSort && (
+        <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-md mb-3 flex gap-2 flex-wrap">
+
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className={inputStyle}
+          >
+            <option value="latest">Latest</option>
+            <option value="oldest">Oldest</option>
+            <option value="high">High Amount</option>
+            <option value="low">Low Amount</option>
+          </select>
+
+        </div>
+      )}
+
+      {/* FORM */}
       {showForm && (
         <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-md mb-4 space-y-2">
 
@@ -142,29 +204,37 @@ const TransactionList = ({ role, onDataChange }) => {
             type="number"
             placeholder="Amount"
             value={formData.amount}
-            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-            className="border p-2 w-full"
+            onChange={(e) =>
+              setFormData({ ...formData, amount: e.target.value })
+            }
+            className={inputStyle}
           />
 
           <input
             type="text"
             placeholder="Category"
             value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            className="border p-2 w-full"
+            onChange={(e) =>
+              setFormData({ ...formData, category: e.target.value })
+            }
+            className={inputStyle}
           />
 
           <input
             type="date"
             value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="border p-2 w-full"
+            onChange={(e) =>
+              setFormData({ ...formData, date: e.target.value })
+            }
+            className={inputStyle}
           />
 
           <select
             value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-            className="border p-2 w-full"
+            onChange={(e) =>
+              setFormData({ ...formData, type: e.target.value })
+            }
+            className={inputStyle}
           >
             <option value="income">Income</option>
             <option value="expense">Expense</option>
@@ -176,7 +246,6 @@ const TransactionList = ({ role, onDataChange }) => {
           >
             Add
           </button>
-
         </div>
       )}
 
@@ -190,7 +259,11 @@ const TransactionList = ({ role, onDataChange }) => {
                 {item.date}
               </p>
             </div>
-            <p className={item.type === "income" ? "text-green-600" : "text-red-600"}>
+            <p
+              className={
+                item.type === "income" ? "text-green-600" : "text-red-600"
+              }
+            >
               ₹ {item.amount}
             </p>
           </div>
