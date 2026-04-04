@@ -10,7 +10,7 @@ html, body, #root {
 :root {
   --bg-main: #0f0f1a;
   --bg-sidebar: #151528;
-  --accent: #a78bfa; /* purple */
+  --accent: #a78bfa;
   --hover: #1f1f3a;
   --text: #e5e7eb;
 }

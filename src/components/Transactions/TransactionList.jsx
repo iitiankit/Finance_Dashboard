@@ -104,20 +104,20 @@ const TransactionList = ({ role, onDataChange }) => {
         <div className="flex gap-2 w-full md:w-1/2">
           <input
             placeholder="Search transactions..."
-            className="border p-2 w-full rounded-md bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="border p-2 w-full rounded-md bg-white dark:bg-gray-800 text-black dark:text-white"
             onChange={(e) => setSearchText(e.target.value)}
           />
 
           <button
             onClick={() => setShowFilter((prev) => !prev)}
-            className="bg-gray-800 text-white px-3 rounded-md whitespace-nowrap"
+            className="bg-[#010048] text-white px-3 rounded-md"
           >
             Filter
           </button>
 
           <button
             onClick={() => setShowSort((prev) => !prev)}
-            className="bg-gray-700 text-white px-3 rounded-md whitespace-nowrap"
+            className="bg-[#010048] text-white px-3 rounded-md"
           >
             Sort
           </button>
@@ -134,59 +134,49 @@ const TransactionList = ({ role, onDataChange }) => {
         )}
       </div>
 
-      {/* SORT DROPDOWN */}
-      {showSort && (
-        <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-md mb-4">
+      {/* ✅ ADD FORM (FIXED ISSUE) */}
+      {showForm && (
+        <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-md mb-4 space-y-2">
+
+          <input
+            type="number"
+            placeholder="Amount"
+            value={formData.amount}
+            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+            className="border p-2 w-full"
+          />
+
+          <input
+            type="text"
+            placeholder="Category"
+            value={formData.category}
+            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+            className="border p-2 w-full"
+          />
+
+          <input
+            type="date"
+            value={formData.date}
+            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            className="border p-2 w-full"
+          />
+
           <select
-            className="border p-2 w-full bg-white dark:bg-gray-800 text-black dark:text-white"
-            onChange={(e) => setSortBy(e.target.value)}
+            value={formData.type}
+            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+            className="border p-2 w-full"
           >
-            <option value="latest">Latest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="high">Amount High to Low</option>
-            <option value="low">Amount Low to High</option>
-          </select>
-        </div>
-      )}
-
-      {/* FILTER */}
-      {showFilter && (
-        <div className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white p-4 rounded-md mb-4 space-y-3">
-          <select
-            className="border p-2 w-full bg-white dark:bg-gray-800 text-black dark:text-white"
-            onChange={(e) => setFilterBy(e.target.value)}
-          >
-            <option value="none">Select Filter</option>
-            <option value="date">Date</option>
-            <option value="type">Income / Expense</option>
-            <option value="amount">Amount</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
           </select>
 
-          {filterBy === "date" && (
-            <input
-              type="date"
-              className="border p-2 w-full bg-white dark:bg-gray-800 text-black dark:text-white"
-              onChange={(e) => setFilterInput(e.target.value)}
-            />
-          )}
+          <button
+            onClick={addTransaction}
+            className="bg-green-500 text-white px-4 py-2 rounded-md"
+          >
+            Add
+          </button>
 
-          {filterBy === "type" && (
-            <select
-              className="border p-2 w-full bg-white dark:bg-gray-800 text-black dark:text-white"
-              onChange={(e) => setFilterInput(e.target.value)}
-            >
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
-          )}
-
-          {filterBy === "amount" && (
-            <input
-              type="number"
-              className="border p-2 w-full bg-white dark:bg-gray-800 text-black dark:text-white"
-              onChange={(e) => setFilterInput(e.target.value)}
-            />
-          )}
         </div>
       )}
 
