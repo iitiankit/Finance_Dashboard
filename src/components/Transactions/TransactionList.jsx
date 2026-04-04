@@ -62,7 +62,7 @@ const TransactionList = ({ role, onDataChange }) => {
     setShowForm(false);
   };
 
-  // 🔍 FILTER
+  //  FILTER
   let filteredList = transactions.filter((item) => {
     const matchSearch = item.category
       .toLowerCase()
@@ -78,7 +78,7 @@ const TransactionList = ({ role, onDataChange }) => {
     return matchSearch && matchFilter;
   });
 
-  // 🔃 SORT (SAFE)
+  //  SORT (SAFE)
   filteredList = [...filteredList];
 
   if (sortBy === "latest") {
